@@ -8,13 +8,6 @@ function request() {
 }
 
 describe('Routes', function() {
-  describe('GET /', function() {
-    it('should return 200', function(done) {
-      request()
-        .get('/')
-        .expect(200, done);
-    });
-  });
   describe('GET /books', function() {
     it('should return 200', function(done) {
       request()

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node --harmony app.js",
-    "test": "mocha --harmony -t 10000"
+    "test": "mocha --harmony -t 8000"
   },
   "dependencies": {
     "co": "^4.4.0",
