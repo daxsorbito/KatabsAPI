@@ -14,7 +14,6 @@ co(function * () {
 });
 
 var Book = {
-
   // This must be avoided, use ajax in the view.
   all : function * all(next){
     if ('GET' != this.method) return yield next;
@@ -108,6 +107,6 @@ var Book = {
   trace: function *(){
     this.body = "Smart! But you can't trace.";
   }
-}
+};
 
 module.exports = Book;
