@@ -1,5 +1,5 @@
 'use strict';
-var messages = require('./controllers/messages');
+var books = require('./controllers/books');
 var compress = require('koa-compress');
 var logger = require('koa-logger');
 var serve = require('koa-static');
@@ -11,19 +11,26 @@ var app = module.exports = koa();
 // Logger
 app.use(logger());
 
-app.use(route.get('/', messages.home));
-app.use(route.get('/messages', messages.list));
-app.use(route.get('/messages/:id', messages.fetch));
-app.use(route.post('/messages', messages.create));
-app.use(route.get('/async', messages.delay));
+app.use(route.get('/', books.home));
+app.use(route.get('/books/', books.all));
+app.use(route.get('/view/books/', books.list));
+app.use(route.get('/books/:id', books.fetch));
+app.use(route.post('/books/', books.add));
+app.use(route.put('/books/:id', books.modify));
+app.use(route.delete('/books/:id', books.remove));
+app.use(route.options('/', books.options));
+app.use(route.trace('/', books.trace));
+app.use(route.head('/', books.head));
+
+
 
 // Serve static files
-// app.use(serve(path.join(__dirname, 'public')));
+app.use(serve(path.join(__dirname, 'public')));
 
 // Compress
 app.use(compress());
 
 if (!module.parent) {
-  app.listen(3000);
-  console.log('listening on port 3000');
+  app.listen(1337);
+  console.log('listening on port 1337');
 }
