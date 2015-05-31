@@ -4,16 +4,20 @@
   "private": true,
   "scripts": {
     "start": "node --harmony app.js",
-    "test": "mocha --harmony -t 8000"
+    "test": "mocha"
   },
   "dependencies": {
-    "koa": "^0.18.1",
-    "koa-mongo-rest": "git://github.com/daxsorbito/koa-mongo-rest.git",
+    "co-bcrypt": "^1.0.0",
+    "co-body": "^2.0.0",
+    "koa": "^0.21.0",
+    "koa-body-parser": "^1.1.2",
     "koa-router": "^5.0.1",
-    "mongoose": "^4.0.2"
+    "mongoose": "^4.0.2",
+    "pluralize": "^1.1.2"
   },
   "devDependencies": {
-    "supertest": "^0.15.0",
-    "mocha": "^2.1.0"
+    "expect.js": "^0.3.1",
+    "mocha": "^2.1.0",
+    "supertest": "^0.15.0"
   }
 }

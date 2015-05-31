@@ -1,0 +1,5 @@
+--harmony
+--recursive
+--reporter spec
+--bail
+--timeout 15000
