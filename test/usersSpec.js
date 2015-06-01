@@ -84,9 +84,9 @@ describe('Routes', function() {
       request()
         .get('/v1/users?find={"user_name":"'+ data.user_name +'"}')
         .set({'Content-Type':'application/json'})
-        .expect('Content-Type', /application\/json/)
-        .expect(200)
         .end(function(err, result) {
+          expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
+          expect(result.statusCode).to.equal(200);
           expect(result.body).to.be.an('array');
           expect(result.body).to.not.be.empty();
           expect(result.body[0].user_name).to.be.eql(data.user_name);
@@ -95,22 +95,43 @@ describe('Routes', function() {
     });
   });
 
-  //describe('Get /v1/users/:id', function(){
-  //  var data = {
-  //    "email": "testUser1@email.com",
-  //    "name": "daxGetTest-forInsert",
-  //    "password": "pass",
-  //    "address": "add",
-  //    "zipcode": "2345"
-  //  };
-  //  before(function(done){
-  //    request()
-  //      .post('/v1/users')
-  //      .set({'Content-Type':'application/json'})
-  //      .send(data)
-  //      .expect('Content-Type', /application\/json/)
-  //      .expect(201,done)
-  //  });
-  //});
+  describe('Get /v1/users/:id', function(){
+    var addedData = {};
+    var data = {
+      "email": "dax.sorbito@email.com",
+      "user_name": "michele.sorbito",
+      "password": "pass",
+      "first_name": "dax",
+      "last_name": "sorbito",
+      "address1": "cebu city",
+      "zip_code": 6000,
+      "user_type": 1
+    };
+    before(function(done){
+      request()
+        .post('/v1/users')
+        .set({'Content-Type':'application/json'})
+        .send(data)
+        .end(function(err, result) {
+          expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
+          expect(result.statusCode).to.equal(201);
+          expect(result.body).to.not.be.empty();
+          addedData = result.body;
+          done();
+        })
+    });
+    it('should return 200 with searched data using _id', function(done){
+      request()
+        .get('/v1/users/'+ addedData._id)
+        .set({'Content-Type':'application/json'})
+        .end(function(err, result) {
+          expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
+          expect(result.statusCode).to.equal(200);
+          expect(result.body).to.not.be.empty();
+          expect(result.body.user_name).to.be.eql(data.user_name);
+          done();
+        })
+    });
+  });
 
 });
