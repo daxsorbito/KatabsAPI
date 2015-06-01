@@ -12,6 +12,7 @@
     "koa": "^0.21.0",
     "koa-body-parser": "^1.1.2",
     "koa-router": "^5.0.1",
+    "koa-validator": "^0.6.4",
     "mongoose": "^4.0.2",
     "pluralize": "^1.1.2"
   },

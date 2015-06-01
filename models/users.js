@@ -2,10 +2,13 @@
 function Users(mongoose) {
   var schema = new mongoose.Schema({
     email: String,
-    name: String,
+    user_name: String,
     password: String,
-    address: String,
-    zipcode: Number
+    first_name: String,
+    last_name: String,
+    address1: String,
+    zip_code: Number,
+    user_type: Number // 0 - server, 1 = client , -1 special
   });
 
   return mongoose.model('user', schema);
