@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node --harmony app.js",
-    "test": "mocha"
+    "start": "NODE_ENV=development node --harmony app.js",
+    "test": "NODE_ENV=development mocha"
   },
   "dependencies": {
     "co-bcrypt": "^1.0.0",
@@ -13,6 +13,7 @@
     "koa-body-parser": "^1.1.2",
     "koa-router": "^5.0.1",
     "koa-validator": "^0.6.4",
+    "lodash": "^3.9.3",
     "mongoose": "^4.0.2",
     "pluralize": "^1.1.2"
   },

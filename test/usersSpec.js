@@ -8,7 +8,7 @@ function request() {
   return superagent(app.listen());
 }
 
-describe('Routes', function() {
+describe('Users', function() {
   describe('Default users schema routes', function() {
     describe('POST /v1/users', function() {
       it('should return 201 - "Created" status', function(done) {
