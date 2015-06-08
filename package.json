@@ -11,6 +11,7 @@
     "co-body": "^2.0.0",
     "koa": "^0.21.0",
     "koa-body-parser": "^1.1.2",
+    "koa-redis": "^1.0.0",
     "koa-router": "^5.0.1",
     "koa-validator": "^0.6.4",
     "lodash": "^3.9.3",

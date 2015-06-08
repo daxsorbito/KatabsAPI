@@ -1,8 +1,6 @@
 'use strict'
-
-var dbConfig = require('../config/db');
-var mongoose = require('mongoose');
-mongoose.connect(dbConfig.connectionUrl());
+var mongooseStore = require('../config/db/mongooseStore')();
+var mongoose = mongooseStore.connect();
 
 var users = require('./users')(mongoose);
 

@@ -1,12 +1,17 @@
 'use strict'
 
+const TO_BE_OVERRIDDEN = "to_be_overridden"
 module.exports = {
-  port: process.env.PORT || 3000,
-  db : {
-    host          :     "192.168.50.4",
-    port          :     "27017",
-    username      :     "",
-    password      :     "",
-    database_name :     "serbisyo"
+  port  : TO_BE_OVERRIDDEN,
+  db    : {
+    host          :     TO_BE_OVERRIDDEN,
+    port          :     TO_BE_OVERRIDDEN,
+    username      :     TO_BE_OVERRIDDEN,
+    password      :     TO_BE_OVERRIDDEN,
+    database_name :     TO_BE_OVERRIDDEN
+  },
+  redis : {
+    host          :     TO_BE_OVERRIDDEN,
+    port          :     TO_BE_OVERRIDDEN
   }
 }
