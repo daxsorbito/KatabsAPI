@@ -10,7 +10,7 @@ function request() {
   return superagent(app.listen());
 }
 
-describe('Auth', function() {
+describe.skip('Auth', function() {
   var shortId;
   beforeEach(function(){
     shortId = shortid.generate();

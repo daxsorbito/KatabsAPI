@@ -7,7 +7,7 @@ describe('Users', function() {
   beforeEach(function(){
     this.server = app.listen();
   });
-  afterEach(function*(){
+  afterEach(function *(){
     yield this.server.close.bind(this.server);
   });
 
@@ -50,30 +50,29 @@ describe('Users', function() {
         "zip_code": 6000,
         "user_type": 1
       };
-      before(function (done){
+      before(function *(done){
         this.server = app.listen();
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result){
-            result.statusCode.should.equal(201);
-            done();
-          });
+          .end();
 
+        result.statusCode.should.equal(201);
+        done();
       });
 
-      it('should return 200 with searched data', function(done){
-        supertest(this.server)
+      it('should return 200 with searched data', function *(done){
+        let result = yield supertest(this.server)
           .get('/v1/users?find={"user_name":"'+ data.user_name +'"}')
           .set({'Content-Type':'application/json'})
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(200);
-            result.body.should.be.a.Array;
-            result.body[0].user_name.should.equal(data.user_name);
-            done();
-          })
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(200);
+        result.body.should.be.a.Array;
+        result.body[0].user_name.should.equal(data.user_name);
+        done();
       });
     });
 
@@ -89,28 +88,29 @@ describe('Users', function() {
         "zip_code": 6000,
         "user_type": 1
       };
-      before(function(done){
+      before(function *(done){
         this.server = app.listen();
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.statusCode.should.equal(201);
-            addedData = result.body;
-            done();
-          })
+          .end();
+
+        result.statusCode.should.equal(201);
+        addedData = result.body;
+        done();
       });
-      it('should return 200 with searched data using _id', function(done){
-        supertest(this.server)
+
+      it('should return 200 with searched data using _id', function *(done){
+        let result = yield supertest(this.server)
           .get('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(200);
-            result.body.user_name.should.equal(data.user_name);
-            done();
-          })
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(200);
+        result.body.user_name.should.equal(data.user_name);
+        done();
       });
     });
 
@@ -126,35 +126,34 @@ describe('Users', function() {
         "zip_code": 6000,
         "user_type": 1
       };
-      before(function(done){
+      before(function *(done){
         this.server = app.listen();
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.statusCode.should.equal(201);
-            addedData = result.body;
-            done();
-          })
+          .end();
+
+        result.statusCode.should.equal(201);
+        addedData = result.body;
+        done();
       });
-      it('should return 200 with deleted data using _id', function(done){
-        supertest(this.server)
+      it('should return 200 with deleted data using _id', function *(done){
+        let result = yield supertest(this.server)
           .del('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(200);
-            result.body.user_name.should.equal(data.user_name);
-            done();
-          })
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(200);
+        result.body.user_name.should.equal(data.user_name);
+        done();
       });
     });
 
     describe('PUT /v1/users/:id', function(){
       var addedData = {};
-
-      before(function(done){
+      before(function *(done){
         var data = {
           "email": "dax.sorbito@email.com",
           "user_name": "daxsorbito",
@@ -166,17 +165,18 @@ describe('Users', function() {
           "user_type": 1
         };
         this.server = app.listen();
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.statusCode.should.equal(201);
-            addedData = result.body;
-            done();
-          })
+          .end();
+
+        result.statusCode.should.equal(201);
+        addedData = result.body;
+        done();
       });
-      it('should return 200 with the updated data using _id', function(done){
+
+      it('should return 200 with the updated data using _id', function *(done){
         var data = {
           "email": "michele.sorbito@email.com",
           "user_name": "michelesorbito",
@@ -187,25 +187,24 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .put('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(200);
-            result.body._id.should.equal(addedData._id);
-            result.body.user_name.should.equal(data.user_name);
-            result.body.password.should.not.equal(addedData.password);
-            done();
-          });
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(200);
+        result.body._id.should.equal(addedData._id);
+        result.body.user_name.should.equal(data.user_name);
+        result.body.password.should.not.equal(addedData.password);
+        done();
       });
     });
 
     describe('POST /v1/users/:id', function(){
       var addedData = {};
-
-      before(function(done){
+      before(function *(done){
         var data = {
           "email": "dax.sorbito@email.com",
           "user_name": "daxsorbito",
@@ -217,18 +216,19 @@ describe('Users', function() {
           "user_type": 1
         };
         this.server = app.listen();
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(201);
-            addedData = result.body;
-            done();
-          })
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(201);
+        addedData = result.body;
+        done();
       });
-      it('should return 200 with the updated data using _id', function(done){
+
+      it('should return 200 with the updated data using _id', function *(done){
         var data = {
           "email": "michele.sorbito@email.com",
           "user_name": "michelesorbito",
@@ -239,19 +239,19 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(200);
-            result.body._id.should.equal(addedData._id);
-            result.body.user_name.should.equal(data.user_name);
-            result.body.password.should.not.equal(data.password);
+          .end();
 
-            done();
-          });
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(200);
+        result.body._id.should.equal(addedData._id);
+        result.body.user_name.should.equal(data.user_name);
+        result.body.password.should.not.equal(data.password);
+
+        done();
       });
     });
   });
@@ -260,12 +260,12 @@ describe('Users', function() {
     beforeEach(function(){
       this.server = app.listen();
     });
-    afterEach(function*(){
+    afterEach(function *(){
       yield this.server.close.bind(this.server);
     });
 
     describe('POST /v1/users', function() {
-      it('should return 400 - "Invalid email"', function (done){
+      it('should return 400 - "Invalid email"', function *(done){
         var data = {
           "email": "dax.sorbito.com",
           "user_name": "dax.sorbito",
