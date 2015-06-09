@@ -1,5 +1,7 @@
 --harmony
+--require co-mocha
+--require should
 --recursive
 --reporter spec
 --bail
---timeout 15000
+--timeout 5s

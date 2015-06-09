@@ -9,6 +9,7 @@
   "dependencies": {
     "co-bcrypt": "^1.0.0",
     "co-body": "^2.0.0",
+    "hat": "0.0.3",
     "koa": "^0.21.0",
     "koa-body-parser": "^1.1.2",
     "koa-redis": "^1.0.0",
@@ -19,9 +20,12 @@
     "pluralize": "^1.1.2"
   },
   "devDependencies": {
+    "co-mocha": "^1.1.0",
+    "co-supertest": "0.0.10",
     "expect.js": "^0.3.1",
     "mocha": "^2.1.0",
     "shortid": "^2.2.2",
-    "supertest": "^0.15.0"
+    "should": "^6.0.3",
+    "supertest": "^1.0.1"
   }
 }

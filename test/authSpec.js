@@ -3,6 +3,8 @@ var shortid = require('shortid');
 var superagent = require('supertest');
 var expect = require('expect.js') // may be change to chai
 var app = require('../app');
+var config = require('../config/config');
+var redisStore = require('../config/db/redisStore')().connect();
 
 function request() {
   return superagent(app.listen());
@@ -41,9 +43,14 @@ describe('Auth', function() {
               .send({"user_name": data.user_name, "password": data.password})
               .end(function(err, result){
                 //console.log(result)
+                // TODO: still on going
                 expect(result.header["content-type"]).to.equal("application/json; charset=utf-8");
                 expect(result.statusCode).to.equal(201);
                 expect(result.body.token).to.not.be.empty();
+                console.log(config.redis.prefix_key + ":USER_TOKEN:" + data.user_name);
+                var token = redisStore.get(config.redis.prefix_key + ":USER_TOKEN:" + data.user_name);
+                console.log(token);
+                expect(token).to.not.be.empty();
                 done();
               });
           });
@@ -78,6 +85,7 @@ describe('Auth', function() {
                 expect(result.header["content-type"]).to.equal("application/json; charset=utf-8");
                 expect(result.statusCode).to.equal(403);
                 expect(result.body.token).to.be(undefined);
+
                 done();
               });
           });

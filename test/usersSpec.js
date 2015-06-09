@@ -1,17 +1,19 @@
-/*global describe, it*/
+
 'use strict';
-var superagent = require('supertest');
-var expect = require('expect.js') // may be change to chai
+var supertest = require('co-supertest');
 var app = require('../app');
 
-function request() {
-  return superagent(app.listen());
-}
-
 describe('Users', function() {
+  beforeEach(function(){
+    this.server = app.listen();
+  });
+  afterEach(function*(){
+    yield this.server.close.bind(this.server);
+  });
+
   describe('Default users schema routes', function() {
     describe('POST /v1/users', function() {
-      it('should return 201 - "Created" status', function(done) {
+      it('should return 201 - "Created" status', function *(done) {
         var data = {
           "email": "dax.sorbito@email.com",
           "user_name": "dax.sorbito",
@@ -23,41 +25,17 @@ describe('Users', function() {
           "user_type": 1
          };
 
-        request()
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            // expect password has been hashed
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body.password).not.to.equal(data.password);
-            done();
-          });
-      });
+          .end();
 
-      it('should return 400 - "Invalid email"', function(done){
-        var data = {
-          "email": "dax.sorbito.com",
-          "user_name": "dax.sorbito",
-          "password": "pass",
-          "first_name": "dax",
-          "last_name": "sorbito",
-          "address1": "cebu city",
-          "zip_code": 6000,
-          "user_type": 1
-        };
-
-        request()
-          .post('/v1/users')
-          .set({'Content-Type':'application/json'})
-          .send(data)
-          .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(400);
-            done();
-          });
-
+        // expect password has been hashed
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(201);
+        result.body.password.should.not.equal(data.password);
+        done();
       });
     });
 
@@ -72,25 +50,28 @@ describe('Users', function() {
         "zip_code": 6000,
         "user_type": 1
       };
-      before(function(done){
-        request()
+      before(function (done){
+        this.server = app.listen();
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .expect('Content-Type', /application\/json/)
-          .expect(201,done)
+          .end(function(err, result){
+            result.statusCode.should.equal(201);
+            done();
+          });
+
       });
 
       it('should return 200 with searched data', function(done){
-        request()
+        supertest(this.server)
           .get('/v1/users?find={"user_name":"'+ data.user_name +'"}')
           .set({'Content-Type':'application/json'})
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(200);
-            expect(result.body).to.be.an('array');
-            expect(result.body).to.not.be.empty();
-            expect(result.body[0].user_name).to.be.eql(data.user_name);
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(200);
+            result.body.should.be.a.Array;
+            result.body[0].user_name.should.equal(data.user_name);
             done();
           })
       });
@@ -109,27 +90,25 @@ describe('Users', function() {
         "user_type": 1
       };
       before(function(done){
-        request()
+        this.server = app.listen();
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body).to.not.be.empty();
+            result.statusCode.should.equal(201);
             addedData = result.body;
             done();
           })
       });
       it('should return 200 with searched data using _id', function(done){
-        request()
+        supertest(this.server)
           .get('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(200);
-            expect(result.body).to.not.be.empty();
-            expect(result.body.user_name).to.be.eql(data.user_name);
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(200);
+            result.body.user_name.should.equal(data.user_name);
             done();
           })
       });
@@ -148,27 +127,25 @@ describe('Users', function() {
         "user_type": 1
       };
       before(function(done){
-        request()
+        this.server = app.listen();
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body).to.not.be.empty();
+            result.statusCode.should.equal(201);
             addedData = result.body;
             done();
           })
       });
       it('should return 200 with deleted data using _id', function(done){
-        request()
+        supertest(this.server)
           .del('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(200);
-            expect(result.body).to.not.be.empty();
-            expect(result.body.user_name).to.be.eql(data.user_name);
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(200);
+            result.body.user_name.should.equal(data.user_name);
             done();
           })
       });
@@ -188,14 +165,13 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        request()
+        this.server = app.listen();
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body).to.not.be.empty();
+            result.statusCode.should.equal(201);
             addedData = result.body;
             done();
           })
@@ -211,44 +187,18 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        request()
+        supertest(this.server)
           .put('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(200);
-            expect(result.body).to.not.be.empty();
-            expect(result.body._id).to.be.eql(addedData._id);
-            expect(result.body.user_name).to.be.eql(data.user_name);
-            expect(result.body.password).not.to.equal(data.password);
-
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(200);
+            result.body._id.should.equal(addedData._id);
+            result.body.user_name.should.equal(data.user_name);
+            result.body.password.should.not.equal(addedData.password);
             done();
           });
-      });
-
-      it('should return 400 - "Invalid email"', function(done){
-        var data = {
-          "email": "dax.sorbito.com",
-          "user_name": "dax.sorbito",
-          "password": "pass",
-          "first_name": "dax",
-          "last_name": "sorbito",
-          "address1": "cebu city",
-          "zip_code": 6000,
-          "user_type": 1
-        };
-
-        request()
-          .put('/v1/users/'+ addedData._id)
-          .set({'Content-Type':'application/json'})
-          .send(data)
-          .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(400);
-            done();
-          });
-
       });
     });
 
@@ -266,14 +216,14 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        request()
+        this.server = app.listen();
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body).to.not.be.empty();
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(201);
             addedData = result.body;
             done();
           })
@@ -289,50 +239,33 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        request()
+        supertest(this.server)
           .post('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(200);
-            expect(result.body).to.not.be.empty();
-            expect(result.body._id).to.be.eql(addedData._id);
-            expect(result.body.user_name).to.be.eql(data.user_name);
-            expect(result.body.password).not.to.equal(data.password);
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(200);
+            result.body._id.should.equal(addedData._id);
+            result.body.user_name.should.equal(data.user_name);
+            result.body.password.should.not.equal(data.password);
 
             done();
           });
-      });
-
-      it('should return 400 - "Invalid email"', function(done){
-        var data = {
-          "email": "dax.sorbito.com",
-          "user_name": "dax.sorbito",
-          "password": "pass",
-          "first_name": "dax",
-          "last_name": "sorbito",
-          "address1": "cebu city",
-          "zip_code": 6000,
-          "user_type": 1
-        };
-
-        request()
-          .post('/v1/users/'+ addedData._id)
-          .set({'Content-Type':'application/json'})
-          .send(data)
-          .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(400);
-            done();
-          });
-
       });
     });
   });
+
   describe('Validation routes test', function() {
+    beforeEach(function(){
+      this.server = app.listen();
+    });
+    afterEach(function*(){
+      yield this.server.close.bind(this.server);
+    });
+
     describe('POST /v1/users', function() {
-      it('should return 400 - "Invalid email"', function(done){
+      it('should return 400 - "Invalid email"', function (done){
         var data = {
           "email": "dax.sorbito.com",
           "user_name": "dax.sorbito",
@@ -344,16 +277,15 @@ describe('Users', function() {
           "user_type": 1
         };
 
-        request()
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(400);
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(400);
             done();
           });
-
       });
     });
 
@@ -371,14 +303,13 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        request()
+        this.server = app.listen();
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body).to.not.be.empty();
+            result.statusCode.should.equal(201);
             addedData = result.body;
             done();
           })
@@ -396,13 +327,13 @@ describe('Users', function() {
           "user_type": 1
         };
 
-        request()
+        supertest(this.server)
           .put('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(400);
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(400);
             done();
           });
 
@@ -423,14 +354,13 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        request()
+        this.server = app.listen();
+        supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body).to.not.be.empty();
+            result.statusCode.should.equal(201);
             addedData = result.body;
             done();
           })
@@ -448,13 +378,13 @@ describe('Users', function() {
           "user_type": 1
         };
 
-        request()
+        supertest(this.server)
           .post('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
           .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(400);
+            result.headers["content-type"].should.equal("application/json; charset=utf-8");
+            result.statusCode.should.equal(400);
             done();
           });
 

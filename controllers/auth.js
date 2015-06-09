@@ -1,6 +1,9 @@
 'use strict'
-var users = require('../models/index').users;
 var bcrypt = require('co-bcrypt');
+var hat = require('hat');
+
+var users = require('../models/index').users;
+var config = require('../config/config');
 var redisStore = require('../config/db/redisStore')().connect();
 
 var Auth = function(){
@@ -18,9 +21,9 @@ var Auth = function(){
 
         if(yield bcrypt.compare(this.request.body.org_pass, result[0].password))
         {
-          //yield redisStore.set('key:ttl', {a: 1}, 86400000);
-          //result = yield redisStore.get('key:ttl');
-          //console.log(result);
+          // TODO: still on going
+          console.log(config.redis.prefix_key + ":USER_TOKEN:" + this.request.body.user_name);
+          yield redisStore.set(config.redis.prefix_key + ":USER_TOKEN:" + this.request.body.user_name, {"token": hat()}, config.token_expiry);
           setResponseBody(this, 201, {token: 'token'});
         }
         else
