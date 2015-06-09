@@ -1,7 +1,6 @@
 'use strict';
 var shortid = require('shortid');
-var superagent = require('supertest');
-var expect = require('expect.js') // may be change to chai
+var supertest = require('supertest');
 var app = require('../app');
 var config = require('../config/config');
 var redisStore = require('../config/db/redisStore')().connect();
@@ -10,14 +9,18 @@ function request() {
   return superagent(app.listen());
 }
 
-describe.skip('Auth', function() {
+describe('Auth', function() {
   var shortId;
   beforeEach(function(){
     shortId = shortid.generate();
+    this.server = app.listen();
+  });
+  afterEach(function *(){
+    yield this.server.close.bind(this.server);
   });
   describe('Login', function() {
     describe('POST auth/login', function(){
-      it('should be able to login with proper credentials', function(done){
+      it('should be able to login with proper credentials', function *(done){
         var data = {
           "email": shortId + "@logintest.com",
           "user_name": "dax.sorbito" + shortId,
@@ -29,34 +32,31 @@ describe.skip('Auth', function() {
           "user_type": 1
         };
 
-        request()
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body.password).not.to.equal(data.password);
-            request()
-              .post('/v1/auth/login')
-              .set({'Content-Type': 'application/json'})
-              .send({"user_name": data.user_name, "password": data.password})
-              .end(function(err, result){
-                //console.log(result)
-                // TODO: still on going
-                expect(result.header["content-type"]).to.equal("application/json; charset=utf-8");
-                expect(result.statusCode).to.equal(201);
-                expect(result.body.token).to.not.be.empty();
-                console.log(config.redis.prefix_key + ":USER_TOKEN:" + data.user_name);
-                var token = redisStore.get(config.redis.prefix_key + ":USER_TOKEN:" + data.user_name);
-                console.log(token);
-                expect(token).to.not.be.empty();
-                done();
-              });
-          });
-      });
+          .end();
 
-      it('should not be able to login with a different credentials', function(done){
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(201);
+        result.body.password.should.not.equal(data.password);
+
+        let result2 = yield supertest(this.server)
+          .post('/v1/auth/login')
+          .set({'Content-Type': 'application/json'})
+          .send({"user_name": data.user_name, "password": data.password})
+          .end();
+
+        result2.header["content-type"].should.equal("application/json; charset=utf-8");
+        result2.statusCode.should.equal(201);
+
+        var token = yield redisStore.get(config.redis.prefix_key + ":USER_TOKEN:" + data.user_name);
+        token.should.not.empty;
+        done();
+    });
+
+      it('should not be able to login with a different credentials', function *(done){
         var data = {
           "email": shortId + "@logintest.com",
           "user_name": "dax.sorbito" + shortId,
@@ -68,28 +68,28 @@ describe.skip('Auth', function() {
           "user_type": 1
         };
 
-        request()
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            expect(result.headers["content-type"]).to.equal("application/json; charset=utf-8");
-            expect(result.statusCode).to.equal(201);
-            expect(result.body.password).not.to.equal(data.password);
-            request()
-              .post('/v1/auth/login')
-              .set({'Content-Type': 'application/json'})
-              .send({"user_name": data.user_name, "password": 'InValidPassword'})
-              .end(function(err, result){
-                //console.log(result)
-                expect(result.header["content-type"]).to.equal("application/json; charset=utf-8");
-                expect(result.statusCode).to.equal(403);
-                expect(result.body.token).to.be(undefined);
+          .end();
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(201);
+        result.body.password.should.not.equal(data.password);
 
-                done();
-              });
-          });
+        let result2 = yield supertest(this.server)
+          .post('/v1/auth/login')
+          .set({'Content-Type': 'application/json'})
+          .send({"user_name": data.user_name, "password": 'InValidPassword'})
+          .expect(403)
+          .end();
+        result2.header["content-type"].should.equal("application/json; charset=utf-8");
+        result2.statusCode.should.equal(403);
+        result2.body.should.not.have.property('token');
+        result2.body.should.have.property('error');
+        done();
       });
     });
   });
+
 });

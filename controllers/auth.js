@@ -21,8 +21,6 @@ var Auth = function(){
 
         if(yield bcrypt.compare(this.request.body.org_pass, result[0].password))
         {
-          // TODO: still on going
-          console.log(config.redis.prefix_key + ":USER_TOKEN:" + this.request.body.user_name);
           yield redisStore.set(config.redis.prefix_key + ":USER_TOKEN:" + this.request.body.user_name, {"token": hat()}, config.token_expiry);
           setResponseBody(this, 201, {token: 'token'});
         }

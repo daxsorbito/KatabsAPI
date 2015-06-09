@@ -277,22 +277,23 @@ describe('Users', function() {
           "user_type": 1
         };
 
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(400);
-            done();
-          });
+          .expect(400)
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(400);
+        done();
       });
     });
 
     describe('PUT /v1/users/:id', function(){
       var addedData = {};
 
-      before(function(done){
+      before(function *(done){
         var data = {
           "email": "dax.sorbito@email.com",
           "user_name": "daxsorbito",
@@ -304,18 +305,18 @@ describe('Users', function() {
           "user_type": 1
         };
         this.server = app.listen();
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.statusCode.should.equal(201);
-            addedData = result.body;
-            done();
-          })
+          .end();
+
+        result.statusCode.should.equal(201);
+        addedData = result.body;
+        done();
       });
 
-      it('should return 400 - "Invalid email"', function(done){
+      it('should return 400 - "Invalid email"', function *(done){
         var data = {
           "email": "dax.sorbito.com",
           "user_name": "dax.sorbito",
@@ -327,15 +328,16 @@ describe('Users', function() {
           "user_type": 1
         };
 
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .put('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(400);
-            done();
-          });
+          .expect(400)
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(400);
+        done();
 
       });
     });
@@ -343,7 +345,7 @@ describe('Users', function() {
     describe('POST /v1/users/:id', function(){
       var addedData = {};
 
-      before(function(done){
+      before(function *(done){
         var data = {
           "email": "dax.sorbito@email.com",
           "user_name": "daxsorbito",
@@ -355,18 +357,17 @@ describe('Users', function() {
           "user_type": 1
         };
         this.server = app.listen();
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.statusCode.should.equal(201);
-            addedData = result.body;
-            done();
-          })
+          .end();
+        result.statusCode.should.equal(201);
+        addedData = result.body;
+        done();
       });
 
-      it('should return 400 - "Invalid email"', function(done){
+      it('should return 400 - "Invalid email"', function *(done){
         var data = {
           "email": "dax.sorbito.com",
           "user_name": "dax.sorbito",
@@ -378,15 +379,16 @@ describe('Users', function() {
           "user_type": 1
         };
 
-        supertest(this.server)
+        let result = yield supertest(this.server)
           .post('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
           .send(data)
-          .end(function(err, result) {
-            result.headers["content-type"].should.equal("application/json; charset=utf-8");
-            result.statusCode.should.equal(400);
-            done();
-          });
+          .expect(400)
+          .end();
+
+        result.headers["content-type"].should.equal("application/json; charset=utf-8");
+        result.statusCode.should.equal(400);
+        done();
 
       });
     });
