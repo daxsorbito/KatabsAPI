@@ -3,7 +3,7 @@ var router = require('koa-router')();
 var generateApi = require('./lib/modelApiGenerator');
 var bodyParser = require('koa-body-parser');
 var validator = require('koa-validator');
-var config = require('./config/config');
+var config = require('./config/index');
 var auth = require('./controllers/auth')();
 var app = koa();
 

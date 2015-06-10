@@ -2,8 +2,8 @@
 var shortid = require('shortid');
 var supertest = require('supertest');
 var app = require('../app');
-var config = require('../config/config');
-var redisStore = require('../config/db/redisStore')().connect();
+var config = require('../config');
+var redisStore = require('../lib/db/redisStore')().connect();
 
 function request() {
   return superagent(app.listen());

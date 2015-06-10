@@ -3,9 +3,9 @@ var bcrypt = require('co-bcrypt');
 var hat = require('hat');
 
 var setResponseBody = require('../lib/responseBodySetter');
-var users = require('../models/index').users;
-var config = require('../config/config');
-var redisStore = require('../config/db/redisStore')().connect();
+var users = require('../models').users;
+var config = require('../config');
+var redisStore = require('../lib/db/redisStore')().connect();
 
 var Auth = function(){
 
