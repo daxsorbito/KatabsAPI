@@ -1,5 +1,6 @@
 
 'use strict';
+var shortid = require('shortid');
 var supertest = require('co-supertest');
 var app = require('../app');
 
@@ -430,6 +431,69 @@ describe('Users', function() {
         result.statusCode.should.equal(400);
         done();
       });
+    });
+  });
+
+  describe('Validate authentication on routes', function(){
+    var shortId;
+    beforeEach(function(){
+      shortId = shortid.generate();
+      this.server = app.listen();
+    });
+    afterEach(function *(){
+      yield this.server.close.bind(this.server);
+    });
+
+    it('should not access POST /v1/users if header credentials are not supplied', function *(done) {
+      var data = {
+        "email": shortId + "@logintest.com",
+        "user_name": "dax.sorbito" + shortId,
+        "password": "pass" + shortId,
+        "first_name": "dax" + shortId,
+        "last_name": "sorbito" + shortId,
+        "address1": "cebu city" + shortId,
+        "zip_code": 6000,
+        "user_type": 1
+      };
+
+      let result = yield supertest(this.server)
+        .post('/v1/users')
+        .set({'Content-Type': 'application/json'})
+        .send(data)
+        .expect(403)
+        .end();
+
+      result.headers["content-type"].should.equal("application/json; charset=utf-8");
+      result.statusCode.should.equal(403);
+      result.body.should.have.property('error');
+      done();
+    });
+    it('should not access POST /v1/users if header credentials are invalid', function *(done) {
+      var data = {
+        "email": shortId + "@logintest.com",
+        "user_name": "dax.sorbito" + shortId,
+        "password": "pass" + shortId,
+        "first_name": "dax" + shortId,
+        "last_name": "sorbito" + shortId,
+        "address1": "cebu city" + shortId,
+        "zip_code": 6000,
+        "user_type": 1
+      };
+
+      let result = yield supertest(this.server)
+        .post('/v1/users')
+        .set({'Content-Type': 'application/json'})
+        .set({
+          "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZYlyBS",
+          "KTB-Username": "dax.testAdmin.sorbio"})
+        .send(data)
+        .expect(403)
+        .end();
+
+      result.headers["content-type"].should.equal("application/json; charset=utf-8");
+      result.statusCode.should.equal(403);
+      result.body.should.have.property('error');
+      done();
     });
   });
 });
