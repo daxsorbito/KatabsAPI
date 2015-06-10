@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-module.exports = _.extend(
+module.exports = _.merge(
   require('./env/all'),
   require('./env/' + (process.env.NODE_ENV || '')) || {}
 );

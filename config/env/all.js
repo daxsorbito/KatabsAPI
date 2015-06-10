@@ -3,7 +3,7 @@ const TO_BE_OVERRIDDEN = "to_be_overridden"
 
 module.exports = {
   port            : TO_BE_OVERRIDDEN,
-  token_expiry     : TO_BE_OVERRIDDEN,
+  token_expiry    : 7200000,
   db              : {
     host          :     TO_BE_OVERRIDDEN,
     port          :     TO_BE_OVERRIDDEN,
@@ -14,6 +14,6 @@ module.exports = {
   redis           : {
     host          :     TO_BE_OVERRIDDEN,
     port          :     TO_BE_OVERRIDDEN,
-    prefix_key    :     TO_BE_OVERRIDDEN
+    prefix_key    :     "KATABSAPI_V1"
   }
 }
