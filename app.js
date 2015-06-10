@@ -7,13 +7,15 @@ var config = require('./config/config');
 var auth = require('./controllers/auth')();
 var app = koa();
 
-var passwordHasher = require('./lib/middlewares/passwordHasher')
-var userValidator = require('./lib/middlewares/modelValidators/users')
+var passwordHasher = require('./lib/middlewares/passwordHasher');
+var authenticate = require('./lib/middlewares/authenticate');
+var userValidator = require('./lib/middlewares/modelValidators/users');
 
 //router is required
 app.use(bodyParser());
 app.use(validator());
 app.use(router.routes());
+app.use(authenticate({except: ['/v1/auth/login']}));
 app.use(userValidator());
 app.use(passwordHasher());
 

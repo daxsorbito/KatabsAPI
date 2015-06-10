@@ -35,6 +35,9 @@ describe('Auth', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -45,6 +48,9 @@ describe('Auth', function() {
         let result2 = yield supertest(this.server)
           .post('/v1/auth/login')
           .set({'Content-Type': 'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send({"user_name": data.user_name, "password": data.password})
           .end();
 
@@ -71,6 +77,9 @@ describe('Auth', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
         result.headers["content-type"].should.equal("application/json; charset=utf-8");
@@ -80,6 +89,9 @@ describe('Auth', function() {
         let result2 = yield supertest(this.server)
           .post('/v1/auth/login')
           .set({'Content-Type': 'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send({"user_name": data.user_name, "password": 'InValidPassword'})
           .expect(403)
           .end();

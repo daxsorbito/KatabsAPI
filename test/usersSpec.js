@@ -28,6 +28,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -55,6 +58,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -66,6 +72,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .get('/v1/users?find={"user_name":"'+ data.user_name +'"}')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .end();
 
         result.headers["content-type"].should.equal("application/json; charset=utf-8");
@@ -93,6 +102,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -105,6 +117,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .get('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .end();
 
         result.headers["content-type"].should.equal("application/json; charset=utf-8");
@@ -131,6 +146,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -138,10 +156,14 @@ describe('Users', function() {
         addedData = result.body;
         done();
       });
+
       it('should return 200 with deleted data using _id', function *(done){
         let result = yield supertest(this.server)
           .del('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .end();
 
         result.headers["content-type"].should.equal("application/json; charset=utf-8");
@@ -168,6 +190,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -190,6 +215,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .put('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -219,6 +247,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -242,6 +273,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .end();
 
@@ -280,6 +314,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(data)
           .expect(400)
           .end();
@@ -306,6 +343,9 @@ describe('Users', function() {
         let result1 = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(addedData)
           .expect(201)
           .end();
@@ -327,6 +367,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .put('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(invalidData)
           .expect(400)
           .end();
@@ -353,6 +396,9 @@ describe('Users', function() {
         let result1 = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .expect(201)
           .send(addedData)
           .end();
@@ -373,6 +419,9 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
+          .set({
+            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+            "KTB-Username": "dax.testAdmin.sorbito"})
           .send(invalidData)
           .expect(400)
           .end();
