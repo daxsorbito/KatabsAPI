@@ -51,7 +51,7 @@ describe('Auth', function() {
         result2.header["content-type"].should.equal("application/json; charset=utf-8");
         result2.statusCode.should.equal(201);
 
-        var token = yield redisStore.get(config.redis.prefix_key + ":USER_TOKEN:" + data.user_name);
+        var token = yield redisStore.get(config.REDIS.PREFIX_KEY + ":USER_TOKEN:" + data.user_name);
         token.should.not.empty;
         done();
     });

@@ -5,8 +5,8 @@ var redisStore = require('koa-redis');
 module.exports = function() {
   function redisOptions() {
     return {
-      host: config.redis.host,
-      port: config.redis.port
+      host: config.REDIS.HOST,
+      port: config.REDIS.PORT
     }
   };
 

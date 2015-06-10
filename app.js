@@ -4,7 +4,7 @@ var generateApi = require('./lib/modelApiGenerator');
 var bodyParser = require('koa-body-parser');
 var validator = require('koa-validator');
 var config = require('./config/config');
-var auth = require('./controllers/auth');
+var auth = require('./controllers/auth')();
 var app = koa();
 
 var passwordHasher = require('./lib/middlewares/passwordHasher')
@@ -23,7 +23,7 @@ var models = require('./models')
 generateApi('/v1', router, models.users);
 
 // specific routes
-router.post('/v1/auth/login', auth().login);
+router.post('/v1/auth/login', auth.login);
 
 if (!module.parent) {
   app.listen(config.port);

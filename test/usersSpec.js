@@ -291,10 +291,8 @@ describe('Users', function() {
     });
 
     describe('PUT /v1/users/:id', function(){
-      var addedData = {};
-
-      before(function *(done){
-        var data = {
+      it('should return 400 - "Invalid email"', function *(done){
+        var addedData = {
           "email": "dax.sorbito@email.com",
           "user_name": "daxsorbito",
           "password": "pass",
@@ -304,20 +302,18 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        this.server = app.listen();
-        let result = yield supertest(this.server)
+
+        let result1 = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
-          .send(data)
+          .send(addedData)
+          .expect(201)
           .end();
 
-        result.statusCode.should.equal(201);
-        addedData = result.body;
-        done();
-      });
+        result1.statusCode.should.equal(201);
+        addedData = result1.body;
 
-      it('should return 400 - "Invalid email"', function *(done){
-        var data = {
+        var invalidData = {
           "email": "dax.sorbito.com",
           "user_name": "dax.sorbito",
           "password": "pass",
@@ -331,22 +327,19 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .put('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
-          .send(data)
+          .send(invalidData)
           .expect(400)
           .end();
 
         result.headers["content-type"].should.equal("application/json; charset=utf-8");
         result.statusCode.should.equal(400);
         done();
-
       });
     });
 
     describe('POST /v1/users/:id', function(){
-      var addedData = {};
-
-      before(function *(done){
-        var data = {
+      it('should return 400 - "Invalid email"', function *(done){
+        var addedData = {
           "email": "dax.sorbito@email.com",
           "user_name": "daxsorbito",
           "password": "pass",
@@ -356,19 +349,17 @@ describe('Users', function() {
           "zip_code": 6000,
           "user_type": 1
         };
-        this.server = app.listen();
-        let result = yield supertest(this.server)
+
+        let result1 = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
-          .send(data)
+          .expect(201)
+          .send(addedData)
           .end();
-        result.statusCode.should.equal(201);
-        addedData = result.body;
-        done();
-      });
+        result1.statusCode.should.equal(201);
+        addedData = result1.body;
 
-      it('should return 400 - "Invalid email"', function *(done){
-        var data = {
+        var invalidData = {
           "email": "dax.sorbito.com",
           "user_name": "dax.sorbito",
           "password": "pass",
@@ -382,14 +373,13 @@ describe('Users', function() {
         let result = yield supertest(this.server)
           .post('/v1/users/'+ addedData._id)
           .set({'Content-Type':'application/json'})
-          .send(data)
+          .send(invalidData)
           .expect(400)
           .end();
 
         result.headers["content-type"].should.equal("application/json; charset=utf-8");
         result.statusCode.should.equal(400);
         done();
-
       });
     });
   });
