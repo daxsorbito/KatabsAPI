@@ -4,4 +4,4 @@
 --recursive
 --reporter spec
 --bail
---timeout 5s
+--timeout 2s

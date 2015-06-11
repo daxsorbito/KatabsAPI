@@ -5,9 +5,26 @@ var app = require('../app');
 var config = require('../config');
 var redisStore = require('../lib/db/redisStore')().connect();
 
-function request() {
-  return superagent(app.listen());
-}
+var getTestData = function() {
+  var shortId = shortid.generate();
+  return  {
+    "email": shortId + "@logintest.com",
+    "user_name": "dax." + shortId,
+    "password": "pass" + shortId,
+    "first_name": "dax_" + shortId,
+    "last_name": shortId,
+    "address1": "cebu city" + shortId,
+    "zip_code": 6000,
+    "user_type": 1
+  };
+};
+
+var getSecurityHeaders = function(inValid) {
+  return {
+    "KTB-Token": inValid ? "invalid" : "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
+    "KTB-Username": inValid ? "invalid" : "dax.testAdmin.sorbito"
+  };
+};
 
 describe('Auth', function() {
   var shortId;
@@ -21,23 +38,12 @@ describe('Auth', function() {
   describe('Login', function() {
     describe('POST auth/login', function(){
       it('should be able to login with proper credentials', function *(done){
-        var data = {
-          "email": shortId + "@logintest.com",
-          "user_name": "dax.sorbito" + shortId,
-          "password": "pass" + shortId,
-          "first_name": "dax" + shortId,
-          "last_name": "sorbito" + shortId,
-          "address1": "cebu city" + shortId,
-          "zip_code": 6000,
-          "user_type": 1
-        };
+        var data = getTestData();
 
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
-          .set({
-            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
-            "KTB-Username": "dax.testAdmin.sorbito"})
+          .set(getSecurityHeaders())
           .send(data)
           .end();
 
@@ -60,23 +66,12 @@ describe('Auth', function() {
     });
 
       it('should not be able to login with a different credentials', function *(done){
-        var data = {
-          "email": shortId + "@logintest.com",
-          "user_name": "dax.sorbito" + shortId,
-          "password": "pass" + shortId,
-          "first_name": "dax" + shortId,
-          "last_name": "sorbito" + shortId,
-          "address1": "cebu city" + shortId,
-          "zip_code": 6000,
-          "user_type": 1
-        };
+        var data = getTestData();
 
         let result = yield supertest(this.server)
           .post('/v1/users')
           .set({'Content-Type':'application/json'})
-          .set({
-            "KTB-Token": "$2a$10$6TPPFv65FRf2p9uFJjYyhOZpbHfNT3qKpyM9waJJ5RpvNzZCYlyBS",
-            "KTB-Username": "dax.testAdmin.sorbito"})
+          .set(getSecurityHeaders())
           .send(data)
           .end();
         result.headers["content-type"].should.equal("application/json; charset=utf-8");
