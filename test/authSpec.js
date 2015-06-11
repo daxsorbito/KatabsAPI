@@ -27,9 +27,7 @@ var getSecurityHeaders = function(inValid) {
 };
 
 describe('Auth', function() {
-  var shortId;
   beforeEach(function(){
-    shortId = shortid.generate();
     this.server = app.listen();
   });
   afterEach(function *(){
@@ -88,6 +86,49 @@ describe('Auth', function() {
         result2.statusCode.should.equal(403);
         result2.body.should.not.have.property('token');
         result2.body.should.have.property('error');
+        done();
+      });
+    });
+
+    describe('POST auth/logout', function(){
+      it('should be able to logout', function *(done){
+        var data = getTestData();
+
+        let createReq = yield supertest(this.server)
+            .post('/v1/users')
+            .set({'Content-Type':'application/json'})
+            .set(getSecurityHeaders())
+            .expect(201)
+            .send(data)
+            .end();
+        createReq.headers["content-type"].should.equal("application/json; charset=utf-8");
+        createReq.statusCode.should.equal(201);
+        createReq.body.password.should.not.equal(data.password);
+
+        let loginReq = yield supertest(this.server)
+            .post('/v1/auth/login')
+            .set({'Content-Type': 'application/json'})
+            .send({"user_name": data.user_name, "password": data.password})
+            .end();
+        loginReq.header["content-type"].should.equal("application/json; charset=utf-8");
+        loginReq.statusCode.should.equal(201);
+
+        var loginToken = yield redisStore.get(config.REDIS.PREFIX_KEY + ":USER_TOKEN:" + data.user_name);
+        loginToken.should.not.empty;
+        this.server = null;
+        this.server = app.listen();
+        let logoutReq = yield supertest(this.server)
+            .post('/v1/auth/logout')
+            .set({'Content-Type': 'application/json'})
+            .set({ "KTB-Username": data.user_name })
+            .send({})
+            .expect(200)
+            .end();
+        logoutReq.header["content-type"].should.equal("application/json; charset=utf-8");
+        logoutReq.statusCode.should.equal(200);
+        var removedToken = (yield redisStore.get(config.REDIS.PREFIX_KEY + ":USER_TOKEN:" + data.user_name)) || 'NO_TOKEN';
+        removedToken.should.equal('NO_TOKEN');
+
         done();
       });
     });

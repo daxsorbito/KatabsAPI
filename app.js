@@ -15,7 +15,7 @@ var userValidator = require('./lib/middlewares/modelValidators/users');
 app.use(bodyParser());
 app.use(validator());
 app.use(router.routes());
-app.use(authenticate({except: ['/v1/auth/login']}));
+app.use(authenticate({except: ['/v1/auth/login', '/v1/auth/logout']}));
 app.use(userValidator());
 app.use(passwordHasher());
 
@@ -26,6 +26,7 @@ generateApi('/v1', router, models.users);
 
 // specific routes
 router.post('/v1/auth/login', auth.login);
+router.post('/v1/auth/logout', auth.logout);
 
 if (!module.parent) {
   app.listen(config.port);
