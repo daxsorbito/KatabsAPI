@@ -35,7 +35,7 @@ var Auth = function(){
       yield next;
       var user_name = this.request.headers[config.HEADER.USER_NAME.toLowerCase()];
       yield redisStore.destroy(config.REDIS.PREFIX_KEY + ":USER_TOKEN:" + user_name);
-      setResponseBody(this, 200, {});
+      setResponseBody(this, 200);
       return this.body;
     }
   }
