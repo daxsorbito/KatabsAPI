@@ -19,5 +19,11 @@ module.exports = {
   HEADER          : {
     HEADER_TOKEN  :     "KTB-Token",
     USER_NAME     :     "KTB-Username"
+  },
+  AUTH            : {
+    RESET         :   {
+      RETRIES     :     5,
+      HOURS       :     2
+    }
   }
 }

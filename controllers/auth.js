@@ -50,6 +50,8 @@ var Auth = function () {
         yield users.update({user_name: user_name}, {password: this.request.body.password}).exec();
         setResponseBody(this, 200, {});
         return this.body
+      } else  {
+        // TODO : implement retries here (redis increment)
       }
     }
   };
