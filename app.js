@@ -15,7 +15,7 @@ var userValidator = require('./lib/middlewares/modelValidators/users');
 app.use(bodyParser());
 app.use(validator());
 app.use(router.routes());
-app.use(authenticate({except: ['/v1/auth/login', '/v1/auth/logout']}));
+app.use(authenticate({except: ['/v1/auth/login', '/v1/auth/logout', 'v1/auth/resetpassword']})); // TODO: do regex mapping
 app.use(userValidator());
 app.use(passwordHasher());
 
@@ -27,6 +27,7 @@ generateApi('/v1', router, models.users);
 // specific routes
 router.post('/v1/auth/login', auth.login);
 router.post('/v1/auth/logout', auth.logout);
+router.post('/v1/auth/resetpassword', auth.resetPassword);
 
 if (!module.parent) {
   app.listen(config.port);
